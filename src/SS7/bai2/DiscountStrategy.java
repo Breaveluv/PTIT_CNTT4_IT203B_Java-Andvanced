@@ -1,0 +1,5 @@
+package SS7.bai2;
+
+public interface DiscountStrategy {
+    double applyDiscount(double totalAmount);
+}
