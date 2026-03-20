@@ -15,11 +15,10 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Intersection is a critical section representing the crossroad.
- * It allows a limited number of vehicles to cross at the same time.
+ * Lớp Intersection đại diện cho ngã tư, nơi điều phối các phương tiện đi qua.
  */
 public class Intersection implements SS9.smartsim.traffic.TrafficLightObserver {
-    private final ReentrantLock lock = new ReentrantLock(true);
+    private final ReentrantLock lock = new ReentrantLock(true); // Lock công bằng (fairness) để xe đến trước đi trước
     private final Condition greenCondition = lock.newCondition();
 
     private final BlockingQueue<Vehicle> waitingQueue = new LinkedBlockingQueue<>();
@@ -35,6 +34,9 @@ public class Intersection implements SS9.smartsim.traffic.TrafficLightObserver {
         this.trafficLight.registerObserver(this);
     }
 
+    /**
+     * Xe đi vào hàng chờ tại ngã tư.
+     */
     public void enterQueue(Vehicle vehicle) throws InterruptedException {
         if (waitingQueue.size() >= maxQueueSize) {
             jamCount++;
@@ -44,13 +46,10 @@ public class Intersection implements SS9.smartsim.traffic.TrafficLightObserver {
     }
 
     /**
-     * Called by a vehicle when it is ready to cross.
-     * Vehicles will only allow crossing when the light is green or they are
-     * priority vehicles.
+     * Xe đợi đèn xanh và thực hiện hành động băng qua ngã tư.
      */
     public void awaitGreenAndCross(Vehicle vehicle) throws InterruptedException {
-        // Vehicles wait until they are allowed to cross.
-        // Priority vehicles may overtake standard vehicles when the light is not green.
+
         while (true) {
             Vehicle head = waitingQueue.peek();
             if (head == null) {
@@ -58,10 +57,12 @@ public class Intersection implements SS9.smartsim.traffic.TrafficLightObserver {
                 continue;
             }
 
+            // Nếu xe đang đứng đầu hàng chờ
             if (head.equals(vehicle)) {
                 break;
             }
 
+            // Nếu là xe ưu tiên và có thể vượt qua các xe thường phía trước
             if (vehicle.isPriority() && canOvertake(priorityAhead(), vehicle)) {
                 break;
             }
@@ -71,10 +72,12 @@ public class Intersection implements SS9.smartsim.traffic.TrafficLightObserver {
 
         lock.lock();
         try {
+            // Chờ cho đến khi đèn xanh hoặc là xe ưu tiên
             while (!canCross(vehicle)) {
                 greenCondition.await(100, TimeUnit.MILLISECONDS);
             }
 
+            // Xóa xe khỏi hàng chờ khi xe bắt đầu đi qua
             if (!waitingQueue.remove(vehicle)) {
                 throw new CollisionException("Xe " + vehicle + " không nằm trong hàng chờ khi chuẩn bị vào giao lộ");
             }
@@ -88,6 +91,9 @@ public class Intersection implements SS9.smartsim.traffic.TrafficLightObserver {
         }
     }
 
+    /**
+     * Kiểm tra xem có xe ưu tiên nào khác đang đứng trước xe này không.
+     */
     private boolean priorityAhead() {
         for (Vehicle v : waitingQueue) {
             if (v.isPriority()) {
@@ -97,17 +103,18 @@ public class Intersection implements SS9.smartsim.traffic.TrafficLightObserver {
         return false;
     }
 
+    /**
+     * Logic cho phép xe ưu tiên vượt lên trước các xe thường.
+     */
     private boolean canOvertake(boolean priorityAhead, Vehicle vehicle) {
-        // A priority vehicle can overtake standard vehicles if it is the first priority
-        // in queue
         if (!vehicle.isPriority()) {
             return false;
         }
         if (!priorityAhead) {
             return true;
         }
-        // If there is a priority ahead of this vehicle, it should wait for that vehicle
-        // first.
+
+        // Nếu có xe ưu tiên khác ở phía trước, phải đợi xe đó đi trước.
         for (Vehicle v : waitingQueue) {
             if (v.equals(vehicle)) {
                 return true;
@@ -126,6 +133,7 @@ public class Intersection implements SS9.smartsim.traffic.TrafficLightObserver {
 
     @Override
     public void onLightChanged(TrafficLightState newState) {
+        // Đánh thức tất cả các luồng xe đang chờ khi đèn chuyển sang màu Xanh
         if ("GREEN".equals(newState.getName())) {
             lock.lock();
             try {

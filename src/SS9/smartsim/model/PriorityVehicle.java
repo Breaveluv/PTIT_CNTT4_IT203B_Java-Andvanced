@@ -33,7 +33,7 @@ public class PriorityVehicle extends Vehicle {
 
     @Override
     public void onLightChanged(SS9.smartsim.traffic.TrafficLightState newState) {
-        // Priority vehicles could log or take special action.
+        // Các phương tiện ưu tiên có thể ghi nhật ký hoặc thực hiện các hành động đặc biệt.
         super.onLightChanged(newState);
     }
 }

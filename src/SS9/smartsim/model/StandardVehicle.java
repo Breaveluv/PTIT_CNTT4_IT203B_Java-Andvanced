@@ -19,7 +19,7 @@ public class StandardVehicle extends Vehicle {
     @Override
     protected void driveToIntersection() throws InterruptedException {
         LogUtil.log("%s đang di chuyển tới ngã tư", this);
-        // Simulate travel time before reaching the intersection
+        // Mô phỏng thời gian di chuyển trước khi đến giao lộ.
         TimeUnit.MILLISECONDS.sleep(speedMillis);
         LogUtil.log("%s đã tới ngã tư và chờ đèn", this);
         trafficLight.registerObserver(this);
@@ -34,6 +34,6 @@ public class StandardVehicle extends Vehicle {
 
     @Override
     public void onLightChanged(SS9.smartsim.traffic.TrafficLightState newState) {
-        // Not used in this basic model; intersection coordinates behavior.
+        // Không được sử dụng trong mô hình cơ bản này; tọa độ giao lộ dùng để điều phối hành vi
     }
 }

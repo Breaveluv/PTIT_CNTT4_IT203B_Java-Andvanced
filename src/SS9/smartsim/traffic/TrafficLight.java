@@ -62,7 +62,12 @@ public class TrafficLight implements Runnable {
     @Override
     public void run() {
         while (active) {
-            LogUtil.log("Đèn chuyển sang %s", currentState.getName());
+            if ("GREEN".equals(currentState.getName())) {
+                System.out.println();
+                LogUtil.log("Green");
+            } else {
+                LogUtil.log("Đèn chuyển sang %s", currentState.getName());
+            }
             notifyObservers();
             try {
                 Thread.sleep(currentState.getDurationMillis());

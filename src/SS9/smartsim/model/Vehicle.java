@@ -55,8 +55,8 @@ public abstract class Vehicle implements Runnable, TrafficLightObserver {
     public void run() {
         try {
             driveToIntersection();
-            // The concrete vehicle implementation should use the Intersection and
-            // TrafficLight to decide when to cross.
+            // Việc triển khai cụ thể của từng loại phương tiện nên sử dụng Giao lộ (Intersection)
+            // và Đèn giao thông (TrafficLight) để quyết định thời điểm băng qua.
             crossIntersection();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

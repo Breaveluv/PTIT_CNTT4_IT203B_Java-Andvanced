@@ -11,9 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Simulator coordinates traffic light and vehicle threads.
- */
 public class Simulator {
     private final TrafficLight trafficLight;
     private final Intersection intersection;
@@ -28,6 +25,7 @@ public class Simulator {
     public void start(int runSeconds) {
         LogUtil.log("Bắt đầu mô phỏng trong %d giây", runSeconds);
 
+        // Khởi chạy luồng điều khiển đèn giao thông
         Thread lightThread = new Thread(trafficLight, "TrafficLightThread");
         lightThread.setDaemon(true);
         lightThread.start();
@@ -41,7 +39,7 @@ public class Simulator {
             launched.add(v);
             vehiclePool.submit(v);
 
-            // Random spawn interval between vehicles
+            // Khoảng thời gian ngẫu nhiên giữa các lần tạo xe mới
             try {
                 TimeUnit.MILLISECONDS.sleep(300);
             } catch (InterruptedException e) {
@@ -50,9 +48,10 @@ public class Simulator {
             }
         }
 
-        // Graceful shutdown
+        // Đóng thread
         vehiclePool.shutdown();
         try {
+            // Đợi tối đa 5 giây để các xe hoàn thành việc đi qua
             if (!vehiclePool.awaitTermination(5, TimeUnit.SECONDS)) {
                 vehiclePool.shutdownNow();
             }
@@ -64,7 +63,8 @@ public class Simulator {
         trafficLight.stop();
         intersection.shutdown();
 
-        LogUtil.log("Mô phỏng kết thúc. Xe đi qua: %d, Số lần kẹt: %d", intersection.getPassedCount(),
+        LogUtil.log("Mô phỏng kết thúc. Xe đã đi qua: %d, Số lần kẹt: %d",
+                intersection.getPassedCount(),
                 intersection.getJamCount());
     }
 }
