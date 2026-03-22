@@ -1,0 +1,8 @@
+Phần 1: Phân tích rủi ro hệ thống (Lý thuyết)
+Cạn kiệt tài nguyên (Connection Leak): Mỗi kết nối mở ra tiêu tốn RAM và CPU của Database Server. Nếu không đóng, số lượng kết nối sẽ chạm ngưỡng max_connections, khiến hệ thống từ chối mọi yêu cầu mới.
+
+Đình trệ dịch vụ khẩn cấp: Trong y tế, việc không thể truy xuất hồ sơ bệnh nhân do lỗi kết nối có thể gây chậm trễ trong việc cấp cứu hoặc ra quyết định điều trị.
+
+Lãng phí tài nguyên: Các kết nối "treo" làm giảm hiệu năng tổng thể của máy chủ, dẫn đến hiện tượng phản hồi chậm (latency cao) cho các thiết bị tại bệnh viện.
+
+Khó bảo trì: Việc không quản lý cấu hình tập trung bằng hằng số khiến việc thay đổi thông tin máy chủ trở nên khó khăn và dễ gây lỗi hệ thống.

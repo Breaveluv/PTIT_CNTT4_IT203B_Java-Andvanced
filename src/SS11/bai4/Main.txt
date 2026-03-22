@@ -1,0 +1,17 @@
+Lý do mệnh đề WHERE luôn đúng nằm ở cách engine SQL xử lý các phép toán logic sau khi chuỗi bị nối.
+
+Chuỗi gốc trong mã nguồn: "SELECT * FROM Patients WHERE full_name = '" + patientName + "'"
+
+Dữ liệu độc hại nhập vào: ' OR '1'='1
+
+Câu lệnh SQL hoàn chỉnh sau khi nối chuỗi:
+
+SQL
+SELECT * FROM Patients WHERE full_name = '' OR '1'='1'
+Tại sao luôn đúng (True)?
+
+SQL sẽ đánh giá điều kiện theo thứ tự: (full_name = '') HOẶC ('1' = '1').
+
+Mặc dù điều kiện đầu tiên có thể sai (không có bệnh nhân tên rỗng), nhưng điều kiện thứ hai '1'='1' là một biểu thức logic luôn luôn đúng.
+
+Trong logic OR, chỉ cần một vế đúng thì toàn bộ mệnh đề WHERE sẽ đúng cho mọi dòng trong bảng dữ liệu. Kết quả là toàn bộ danh sách bệnh nhân bị lộ.

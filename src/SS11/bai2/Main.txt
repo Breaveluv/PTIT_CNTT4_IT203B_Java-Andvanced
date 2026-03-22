@@ -1,0 +1,12 @@
+Phần 1 - Phân tích: Hạn chế của lệnh if và cơ chế con trỏ
+Trong JDBC, ResultSet hoạt động giống như một danh sách các hàng dữ liệu được trả về từ truy vấn SQL.
+
+Tại sao lệnh if không đủ: Lệnh if (rs.next()) chỉ kiểm tra và di chuyển con trỏ một lần duy nhất từ vị trí trước hàng đầu tiên (before first) vào hàng dữ liệu đầu tiên. Do đó, chương trình chỉ xử lý được một bản ghi duy nhất rồi kết thúc, không thể duyệt qua các hàng tiếp theo để in toàn bộ danh sách.
+
+Cơ chế của con trỏ (Cursor): * Mặc định, con trỏ nằm ở vị trí ngay trước hàng đầu tiên.
+
+Mỗi khi gọi phương thức .next(), con trỏ sẽ nhảy xuống hàng kế tiếp.
+
+Nếu hàng đó có dữ liệu, .next() trả về true; nếu đã đi hết bảng (sau hàng cuối cùng), nó trả về false.
+
+Việc sử dụng if khiến con trỏ dừng lại ngay sau bước nhảy đầu tiên, bỏ lỡ toàn bộ dữ liệu phía sau.

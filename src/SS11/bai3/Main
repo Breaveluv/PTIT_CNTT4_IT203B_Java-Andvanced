@@ -1,0 +1,11 @@
+Trong JDBC, phương thức executeUpdate() của đối tượng Statement hoặc PreparedStatement có đặc điểm sau:
+
+Ý nghĩa giá trị trả về: Nó trả về một số nguyên (int). Con số này đại diện cho số lượng dòng (rows) bị tác động bởi câu lệnh SQL (INSERT, UPDATE, hoặc DELETE).
+
+Tại sao hệ thống cũ không báo lỗi? Khi bạn truyền một bed_id không tồn tại (như Bed_999), câu lệnh SQL UPDATE vẫn hợp lệ về mặt cú pháp. Tuy nhiên, vì không tìm thấy dòng nào thỏa mãn điều kiện WHERE, cơ sở dữ liệu trả về kết quả là 0 dòng bị cập nhật. Vì mã nguồn cũ không kiểm tra con số này nên nó mặc định in ra thông báo "thành công".
+
+Cách phản hồi chính xác: Chúng ta cần gán giá trị trả về của executeUpdate() vào một biến.
+
+Nếu giá trị > 0: Cập nhật thành công (có giường được đổi trạng thái).
+
+Nếu giá trị == 0: Nghĩa là không có dòng nào được cập nhật, từ đó ta có thể kết luận và thông báo: "Mã giường này không tồn tại!".
