@@ -1,0 +1,9 @@
+Khi sử dụng Statement trong vòng lặp như mã nguồn lỗi, Database Server phải thực hiện quy trình sau 1.000 lần:
+
+Phân tích (Parse): Kiểm tra cú pháp của chuỗi SQL. Vì mỗi lần lặp chuỗi SQL lại khác nhau (do cộng giá trị tr.getData()), DB coi đó là một câu lệnh hoàn toàn mới.
+
+Lập kế hoạch thực thi (Execution Plan): DB phải tính toán xem nên chèn dữ liệu vào đâu, sử dụng index nào là tối ưu nhất.
+
+Biên dịch (Compile): Chuyển câu lệnh thành mã máy mà DB hiểu được.
+
+Sự lãng phí: Việc lặp lại 3 bước trên 1.000 lần cho cùng một cấu trúc lệnh INSERT gây tốn CPU và RAM của Database Server một cách vô ích, dẫn đến hiện tượng "chạy cực chậm".

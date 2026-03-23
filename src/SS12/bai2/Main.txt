@@ -1,0 +1,15 @@
+Khi bạn sử dụng cộng chuỗi (+ temp +), Java sẽ gọi phương thức toString() của biến double. Phương thức này phụ thuộc vào cấu hình hệ thống (Locale):
+
+Locale Mỹ (en-US): Số được hiểu là 37.5 (Dấu chấm).
+
+Locale Việt/Pháp (vi-VN): Số có thể bị biến thành 37,5 (Dấu phẩy).
+
+Khi gửi 37,5 vào câu lệnh SQL, cơ sở dữ liệu sẽ báo lỗi cú pháp vì SQL tiêu chuẩn chỉ chấp nhận dấu chấm cho số thập phân.
+
+PreparedStatement giải quyết vấn đề này nhờ các phương thức setDouble() và setInt():
+
+Truyền dữ liệu nhị phân: Các phương thức này không biến số thành chuỗi văn bản trước khi gửi. Thay vào đó, chúng truyền giá trị dưới dạng dữ liệu thô (binary) hoặc định dạng chuẩn mà driver JDBC và DB đã thỏa thuận.
+
+Độc lập với Locale: Driver JDBC có trách nhiệm đảm bảo rằng dù máy tính của y tá cài đặt ngôn ngữ gì, giá trị số vẫn được gửi đến DB một cách chính xác nhất mà không bị biến đổi dấu phẩy hay dấu chấm một cách tùy tiện.
+
+Đúng kiểu dữ liệu (Strong Typing): Nó đảm bảo dữ liệu truyền vào cột temperature phải là số, ngăn chặn việc vô tình truyền nhầm ký tự lạ.

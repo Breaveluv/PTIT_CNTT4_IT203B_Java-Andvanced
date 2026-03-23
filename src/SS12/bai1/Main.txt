@@ -1,0 +1,21 @@
+Lý do chính khiến đoạn code cũ trong hình bị lỗi là do nó sử dụng cộng chuỗi trực tiếp (String Concatenation). Khi người dùng nhập ' OR '1'='1, câu lệnh SQL sẽ trở thành:
+SELECT * FROM Doctors WHERE code = '' AND pass = '' OR '1'='1'
+Vì 1=1 luôn đúng, kẻ tấn công có thể đăng nhập mà không cần mật khẩu.
+
+PreparedStatement giải quyết vấn đề này qua hai cơ chế:
+
+Cơ chế Pre-compiled (Biên dịch trước):
+
+Khi bạn khởi tạo PreparedStatement, câu lệnh SQL (với các dấu ?) được gửi đến cơ sở dữ liệu (Database - DB) để biên dịch trước.
+
+DB sẽ xác định cấu trúc của câu lệnh (đâu là lệnh SELECT, đâu là bảng Doctors, đâu là điều kiện WHERE) ngay từ đầu.
+
+Sau khi cấu trúc đã được "chốt", DB sẽ không bao giờ thay đổi cấu trúc đó nữa, bất kể dữ liệu bạn truyền vào là gì.
+
+Xử lý tham số đầu vào (Parameterization):
+
+Các dấu hỏi chấm (?) chỉ đóng vai trò là vật chứa dữ liệu (placeholder).
+
+Khi bạn dùng setString(), JDBC sẽ tự động xử lý (escape) các ký tự đặc biệt như dấu nháy đơn '. Dữ liệu nhập vào sẽ được coi là một chuỗi văn bản thuần túy, chứ không phải là một phần của lệnh SQL.
+
+Ví dụ: Chuỗi ' OR '1'='1 sẽ được DB hiểu là "một cái mật khẩu có nội dung là ' OR '1'='1", chứ không phải là một lệnh logic.

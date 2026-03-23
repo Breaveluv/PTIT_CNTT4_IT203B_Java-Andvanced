@@ -1,0 +1,9 @@
+Tại sao JDBC bắt buộc phải gọi registerOutParameter()?
+
+Mặc định, các tham số trong SQL được coi là đầu vào (IN). Khi một Stored Procedure có tham số đầu ra (OUT), Java cần biết trước kiểu dữ liệu của tham số đó để cấp phát bộ nhớ và chuẩn bị trình xử lý dữ liệu phù hợp trước khi lệnh được thực thi tại Database.
+
+Nếu không đăng ký, khi bạn gọi getDouble(2), JDBC sẽ không tìm thấy ánh xạ nào cho vị trí số 2 và quăng ra lỗi "index out of range".
+
+Đăng ký kiểu DECIMAL:
+
+Nếu tham số đầu ra là kiểu DECIMAL trong SQL, bạn phải sử dụng hằng số java.sql.Types.DECIMAL (hoặc đôi khi là NUMERIC) để đăng ký trong Java.
