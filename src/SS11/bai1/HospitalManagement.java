@@ -1,4 +1,4 @@
-package SS10.bai1;
+package SS11.bai1;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

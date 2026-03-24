@@ -1,0 +1,40 @@
+. Phân tích I/O (Input/Output)
+Dữ liệu đầu vào (Input):
+
+maBenhNhan (int): Mã định danh duy nhất của bệnh nhân trong hệ thống.
+
+tienVienPhi (double): Số tiền viện phí cần phải thanh toán.
+
+Kết quả đầu ra (Output):
+
+Thành công: Thông báo "Xuất viện thành công", tiền được trừ, giường được giải phóng, trạng thái bệnh nhân cập nhật.
+
+Thất bại: Ném ra ngoại lệ (Exception) kèm thông báo lỗi cụ thể (Thiếu tiền, sai mã bệnh nhân, lỗi mạng) và không có dữ liệu nào bị thay đổi trong database.
+
+2. Đề xuất giải pháp
+Để giải quyết yêu cầu "Thành công tất cả hoặc không có gì", chúng ta sử dụng cơ chế Manual Transaction Management:
+
+Tắt chế độ tự động lưu: connection.setAutoCommit(false).
+
+Sử dụng khối try-catch-finally: Toàn bộ logic nằm trong try. Nếu gặp bất kỳ lỗi nào hoặc vi phạm bẫy dữ liệu, thực hiện rollback() trong khối catch.
+
+Xử lý bẫy 1 (Thiếu tiền): Thực hiện một câu lệnh SELECT để kiểm tra số dư trước khi UPDATE.
+
+Xử lý bẫy 2 (Row Affected = 0): Kiểm tra giá trị trả về của executeUpdate(). Nếu bằng 0, chủ động ném SQLException.
+
+3. Thiết kế các bước xử lý (Workflow)
+Thiết lập kết nối Database và tắt AutoCommit.
+
+Truy vấn số dư tạm ứng của bệnh nhân dựa trên maBenhNhan.
+
+Kiểm tra Bẫy 1: Nếu soDu < tienVienPhi -> Ném Exception.
+
+Thực thi Bước 1: UPDATE trừ tiền ví bệnh nhân.
+
+Thực thi Bước 2: UPDATE trạng thái giường bệnh -> Kiểm tra Bẫy 2 (Nếu rows == 0 -> Ném Exception).
+
+Thực thi Bước 3: UPDATE trạng thái bệnh nhân -> Kiểm tra Bẫy 2 (Nếu rows == 0 -> Ném Exception).
+
+Gọi commit() để chốt dữ liệu.
+
+Đóng kết nối trong khối finally.

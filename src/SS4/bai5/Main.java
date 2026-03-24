@@ -10,7 +10,7 @@ public class Main {
         public User(Role role) { this.role = role; }
     }
 
-  =
+
     public boolean canPerformAction(User user, Action action) {
         if (user == null || user.role == null) return false;
 

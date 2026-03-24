@@ -1,4 +1,4 @@
-package SS10.bai4;
+package SS11.bai4;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

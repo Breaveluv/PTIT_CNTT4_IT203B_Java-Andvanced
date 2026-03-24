@@ -1,4 +1,4 @@
-package SS10.bai2;
+package SS11.bai2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

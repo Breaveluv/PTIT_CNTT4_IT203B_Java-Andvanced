@@ -1,0 +1,9 @@
+1. Phân tích I/ODữ liệu đầu vào (Input): ngayHienTai (String/Date) - Dùng để lọc bệnh nhân nhập viện trong ngày.Kết quả đầu ra (Output): List<BenhNhanDTO> – Mỗi Object chứa thông tin bệnh nhân và một List<DichVu> đi kèm.
+2. Đề xuất 2 giải pháp truy vấn JDBC
+Giải pháp 1: Truy vấn lồng nhau (N+1 Query)
+ - Cách làm cũ:
+ Bước 1: Chạy 1 câu SQL lấy danh sách 500 bệnh nhân.
+ Bước 2: Dùng vòng lặp for, với mỗi bệnh nhân lại bắn thêm 1 câu SQL vào bảng DichVuSuDung để lấy dịch vụ của người đó.Tổng cộng: Bắn $1 + 500 = 501$ lần query vào Database.
+\Giải pháp 2: Sử dụng phép JOIN hoặc Tách 2 Query độc lập - Cách làm mới
+:Cách A (LEFT JOIN): Dùng 1 câu SQL duy nhất kết hợp 2 bảng. Database trả về một bảng lớn (Result Set) chứa cả thông tin bệnh nhân và dịch vụ. Java sẽ thực hiện nhóm (grouping) dữ liệu lại.
+Cách B (2 Query] tách biệt): Query 1 lấy toàn bộ 500 bệnh nhân. Query 2 lấy TOÀN BỘ dịch vụ của 500 người đó (dùng toán tử IN). Sau đó dùng Map trong Java để khớp dữ liệu trên RAM.

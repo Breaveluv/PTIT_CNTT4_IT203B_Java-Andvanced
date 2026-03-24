@@ -1,0 +1,7 @@
+Dựa trên kiến thức về Transaction và chế độ Auto-Commit mặc định, nguyên nhân lỗi như sau:
+
+Chế độ Auto-Commit mặc định: Trong JDBC, một Connection khi được tạo ra mặc định sẽ có chế độ setAutoCommit(true). Điều này có nghĩa là mỗi khi câu lệnh ps1.executeUpdate() chạy xong, dữ liệu sẽ được xác nhận (commit) ngay lập tức vào cơ sở dữ liệu.
+
+Điểm gãy logic: Khi mạng chập chờn hoặc có lỗi xảy ra ở giữa (sau dòng ps1 và trước dòng ps2), lệnh trừ thuốc đã được thực thi và lưu lại vĩnh viễn. Vì không có cơ chế quản lý giao dịch, hệ thống không thể tự động rút lại (rollback) hành động trừ thuốc đó khi lệnh lưu hồ sơ bệnh án thất bại.
+
+Vi phạm tính Atomicity: Hệ thống đang xử lý hai thao tác này như hai công việc riêng biệt thay vì một "khối" công việc duy nhất (All or Nothing).

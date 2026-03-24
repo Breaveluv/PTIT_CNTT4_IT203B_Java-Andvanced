@@ -1,0 +1,7 @@
+Việc chỉ sử dụng System.out.println() trong khối catch là vi phạm nguyên tắc của Transaction vì:
+
+Dữ liệu bị "treo" (In-flight Transaction): Khi bạn gọi setAutoCommit(false), các thay đổi dữ liệu (như trừ tiền ví) sẽ được lưu vào một vùng nhớ đệm tạm thời của Database. Nếu lỗi xảy ra ở bước 2 và bạn chỉ in ra thông báo lỗi mà không gọi rollback(), các thay đổi tạm thời đó vẫn nằm chờ ở đó, gây chiếm dụng tài nguyên hệ thống.
+
+Thiếu tính nhất quán (Consistency): Mặc dù dữ liệu chưa được commit xuống ổ cứng, nhưng kết nối đó vẫn đang giữ các khóa (locks) trên các hàng dữ liệu. Điều này có thể khiến các giao dịch khác của các bệnh nhân khác bị chặn lại (Deadlock) hoặc chờ đợi vô thời hạn.
+
+Hành động bị bỏ quên: Lập trình viên đã quên gọi lệnh conn.rollback(). Đây là lệnh bắt buộc để thông báo cho Database rằng: "Giao dịch này đã hỏng, hãy hủy bỏ mọi thay đổi tạm thời và đưa dữ liệu về trạng thái an toàn ban đầu".
